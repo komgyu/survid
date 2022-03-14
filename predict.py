@@ -40,4 +40,4 @@ for i in range(1024):
                 viz[i,j,:] = 0  
 
 viz = Image.fromarray(viz)
-viz = g_viz.save('predict.png')
+viz = viz.save('predict.png')
