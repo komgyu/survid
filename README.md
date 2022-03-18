@@ -9,7 +9,8 @@ ground truth for reference
 
 the learning result
 ![600-](https://user-images.githubusercontent.com/38833796/158982878-4e5945b4-f591-4877-9501-71996e16e646.png)
-
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------
 predict an image that the network never learns
 ![predict200](https://user-images.githubusercontent.com/38833796/158983128-9fb890e4-7fff-44fb-819e-3f679eccd150.png)
 
