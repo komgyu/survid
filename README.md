@@ -14,5 +14,7 @@ predict an image that the network never learns
 ![predict200](https://user-images.githubusercontent.com/38833796/158983128-9fb890e4-7fff-44fb-819e-3f679eccd150.png)
 
 original
-![Uploading frame_0200.png…]()
+![frame_0200](https://user-images.githubusercontent.com/38833796/158983498-1c356a36-5e4b-4b4d-a618-b65af06e9abd.png)
+
+
 
