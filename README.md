@@ -1,5 +1,6 @@
 # survid
-![result](https://user-images.githubusercontent.com/38833796/158219136-08bc490b-46f3-4acf-bb3e-fd60c0479438.png)
+![2022-03-21 (2)](https://user-images.githubusercontent.com/38833796/159286474-4947b000-1d23-42b7-b46c-c036456b017a.png)
+
 
 the learning process
 ![img_400](https://user-images.githubusercontent.com/38833796/158224827-3fa6a5f6-03f9-405f-a904-cd4e0fcf9e5a.png)
