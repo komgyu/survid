@@ -1,0 +1,8 @@
+original_data
+data
+*DS_Store
+.vscode
+__pycache__
+images
+logs
+models
