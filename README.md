@@ -1,5 +1,4 @@
 # survid
-# survid
 6 channels input training result
 ![2022-04-11 (5)](https://user-images.githubusercontent.com/38833796/162738864-3a1b50c1-571a-4929-8d2d-5f58e8eca8a9.png)
 
