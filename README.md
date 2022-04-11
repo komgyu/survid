@@ -17,4 +17,6 @@
 ![2022-04-11 (8)](https://user-images.githubusercontent.com/38833796/162745303-00ae9185-0ab4-4069-985e-f11daffea6a5.png)
 
 
+validation result current_accuracy: 0.9797
+![309](https://user-images.githubusercontent.com/38833796/162756484-19ce147f-d288-4821-9284-a1b83fa9d0db.png)
 
