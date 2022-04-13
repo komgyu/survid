@@ -74,7 +74,7 @@ def main():
     val_loss = 0.69*torch.ones([], device=device) # loss for random decision = ln(0.5)
     val_accuracy = 0.5*torch.ones([], device=device) # random decision = 0.5
     
-#    
+    #training starts    
     while epoch<= 5000:
         for i, data in enumerate(trainloader):
             im, s, s_gt,_,_= data #im，original image, s = im + flow
@@ -134,6 +134,7 @@ def main():
             print('# ... done.', file=open(logname, 'a'), flush=True)
 
             ####################################################################
+            #validate after every epoch
             IMAGE_PATH = './validate/2peg/original/'+ str(300+epoch%9)+'.png'
             FLOW_PATH = './validate/2peg/flow/'+ str(300+epoch%9)+'.png'
             LABEL_PATH = './validate/2peg/label/'+ str(300+epoch%9)+'.png'
@@ -180,13 +181,11 @@ def main():
             current_accuracy = (scores == L).float().mean()
             val_accuracy = val_accuracy*0.99 + current_accuracy*0.01
 
-           
-
-            predicttoprint = 'time: ' + str(time.time()-time0) + ' epoch: ' + str(epoch)
-            predicttoprint += ' len: ' + str(vlen(snet).cpu().numpy())
-            predicttoprint += ' val_loss: ' + str(val_loss.cpu().numpy())
-            predicttoprint += ' val_accuracy: ' + str(val_accuracy.cpu().numpy())
-            print(predicttoprint, file=open('D:/yukong/survid/logs/Cross/val_log.txt', 'a'), flush=True)
+            valtoprint = 'time: ' + str(time.time()-time0) + ' epoch: ' + str(epoch)
+            valtoprint += ' len: ' + str(vlen(snet).cpu().numpy())
+            valtoprint += ' val_loss: ' + str(val_loss.cpu().numpy())
+            valtoprint += ' val_accuracy: ' + str(val_accuracy.cpu().numpy())
+            print(valtoprint, file=open('D:/yukong/survid/logs/Cross/val_log.txt', 'a'), flush=True)
             print('# Finished ...', file=open('D:/yukong/survid/logs/Cross/val_log.txt', 'a'), flush=True)
 
         epoch += 1
