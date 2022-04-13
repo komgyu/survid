@@ -9,7 +9,7 @@ import numpy as np
 from PIL import Image
 
 from snet import SNet
-from batch import UAVDataSet
+from batch import TrainDataSet
 # from loss import DiceLoss
 
 
@@ -52,69 +52,59 @@ def main():
 
 
     #######################################################################
-    DATA_DIRECTORY = './'
-    DATA_LIST_PATH = './images_id.txt'
+    TRAIN_DATA_DIRECTORY = './'
+    TRAIN_DATA_LIST_PATH = './images_id.txt'
     Batch_size = 1
     # MEAN = (104.008, 116.669, 122.675)
-    dst = UAVDataSet(DATA_DIRECTORY,DATA_LIST_PATH)
+    dst = TrainDataSet(TRAIN_DATA_DIRECTORY,TRAIN_DATA_LIST_PATH)
     # just for test,  so the mean is (0,0,0) to show the original images.
     # But when we are training a model, the mean should have another value
     trainloader = torch.utils.data.DataLoader(dst, batch_size = Batch_size, shuffle=True)
     #########################################################################
 
-    log_period = 10
-    save_period = 100
-    count = 0
+    log_period = 1
+    save_period = 50
+    epoch = 0
 
     print('# Everything prepared, go ...', file=open(logname, 'a'), flush=True)
 
-    loss = 0.69*torch.ones([], device=device) # loss for random decision = ln(0.5)
-    accuracy = 0.5*torch.ones([], device=device) # random decision = 0.5
+    train_loss = 0.69*torch.ones([], device=device) # loss for random decision = ln(0.5)
+    train_accuracy = 0.5*torch.ones([], device=device) # random decision = 0.5
+
+    val_loss = 0.69*torch.ones([], device=device) # loss for random decision = ln(0.5)
+    val_accuracy = 0.5*torch.ones([], device=device) # random decision = 0.5
     
 #    
-    while True:
-     for i, data in enumerate(trainloader):
-        im, s, s_gt,_,_= data #im，original image, s = im + flow
-        im   = im.to(device)
-        s    = s.to(device)
-        s_gt = s_gt.to(device)
+    while epoch<= 5000:
+        for i, data in enumerate(trainloader):
+            im, s, s_gt,_,_= data #im，original image, s = im + flow
+            im   = im.to(device)
+            s    = s.to(device)
+            s_gt = s_gt.to(device)
 
-        optimizer.zero_grad()
-        scores = snet(s) 
+            optimizer.zero_grad()
+            scores = snet(s) 
 
-        current_loss = criterion(scores, s_gt)
-        
-        current_loss.backward()
-        optimizer.step()
-        # track the loss
-        loss = loss*0.99 + current_loss.detach()*0.01
+            current_loss = criterion(scores, s_gt)
+            
+            current_loss.backward()
+            optimizer.step()
+            # track the loss
+            train_loss = train_loss*0.99 + current_loss.detach()*0.01
+            s = torch.argmax(scores, dim = 1)
 
-        # track the accuracy
-        #s = (scores.detach()>0).float() # current decision
-        #decide s
-        
-        # soft = torch.nn.Softmax(dim = 1)
-        # s = soft(scores)
-        # print(s.size()) #[1,3,1024,1920]
-        s = torch.argmax(scores, dim = 1)
+            current_accuracy = (s == s_gt).float().mean()
+            train_accuracy = train_accuracy*0.99 + current_accuracy*0.01
 
-        current_accuracy = (s == s_gt).float().mean()
-        accuracy = accuracy*0.99 + current_accuracy*0.01
-
-        # once awhile print something out
-        if count % log_period == log_period-1:
-            strtoprint = 'time: ' + str(time.time()-time0) + ' count: ' + str(count)
-
+        # once awhile print something out   
+        if epoch%log_period==0:
+            strtoprint = 'time: ' + str(time.time()-time0) + ' epoch: ' + str(epoch)
             strtoprint += ' len: ' + str(vlen(snet).cpu().numpy())
-            strtoprint += ' loss: ' + str(loss.cpu().numpy())
-            strtoprint += ' accuracy: ' + str(accuracy.cpu().numpy())
-
+            strtoprint += ' train_loss: ' + str(train_loss.cpu().numpy())
+            strtoprint += ' train_accuracy: ' + str(train_accuracy.cpu().numpy())
             print(strtoprint, file=open(logname, 'a'), flush=True)
 
 
-
-        # once awhile save the models for further use
-        if count % save_period == 0:
             print('# Saving models ...', file=open(logname, 'a'), flush=True)
             torch.save(snet.state_dict(), args.data_dir + '/models/snet_' + args.call_prefix + '.pt')
 
@@ -123,7 +113,7 @@ def main():
             imtoviz = s
             imtoviz = imtoviz.cpu().detach().numpy()
             s_gt = s_gt.cpu().detach().numpy()
- 
+
             g_viz = np.zeros([1024,1920,3],dtype = np.uint8)
             g_viz[:,:,0] = (s_gt[0,:,:]== 2)*128 
             g_viz[:,:,1] = (s_gt[0,:,:]== 1)*128                  
@@ -137,16 +127,16 @@ def main():
             im_viz = Image.fromarray(np.uint8(im_viz))
 
             g_viz = g_viz.save('./images/Cross/gt.png')
-            im_viz = im_viz.save('./images/Cross/img_' + str(count) + '.png')
+            im_viz = im_viz.save('./images/Cross/img_' + str(epoch) + '.png')
             #vutils.save_image(g_viz.float(), args.data_dir + '/images/Cross/gt.png')
             #vutils.save_image(im_viz.float(), args.data_dir + '/images/Cross/img_' + str(count) + '.png')
             print('# Now at ' + time.strftime('%c'), file=open(logname, 'a'), flush=True)
             print('# ... done.', file=open(logname, 'a'), flush=True)
 
             ####################################################################
-            IMAGE_PATH = 'D:/yukong/survid/validate/2peg/original/'+ str(300+count%9)+'.png'
-            FLOW_PATH = 'D:/yukong/survid/validate/2peg/flow/'+ str(300+count%9)+'.png'
-            LABEL_PATH = 'D:/yukong/survid/validate/2peg/label/'+ str(300+count%9)+'.png'
+            IMAGE_PATH = './validate/2peg/original/'+ str(300+epoch%9)+'.png'
+            FLOW_PATH = './validate/2peg/flow/'+ str(300+epoch%9)+'.png'
+            LABEL_PATH = './validate/2peg/label/'+ str(300+epoch%9)+'.png'
             PATH = 'D:/yukong/survid/models/snet_tmp.pt'
             model = torch.nn.DataParallel(SNet(6)).to(device)
             model.load_state_dict(torch.load(PATH))
@@ -183,29 +173,31 @@ def main():
             IF = IF.unsqueeze(0)
             scores = model(IF)
 
-            pre_loss = criterion(scores, L)
-            loss = loss*0.99 + pre_loss.detach()*0.01
+            current_loss = criterion(scores, L)
+            val_loss = val_loss*0.99 + current_loss.detach()*0.01
             
             scores = torch.argmax(scores, dim = 1)
-            pre_accuracy = (scores == L).float().mean()
-            accuracy = accuracy*0.99 + pre_accuracy*0.01
+            current_accuracy = (scores == L).float().mean()
+            val_accuracy = val_accuracy*0.99 + current_accuracy*0.01
 
            
 
-            predicttoprint = 'time: ' + str(time.time()-time0) + ' count: ' + str(count)
+            predicttoprint = 'time: ' + str(time.time()-time0) + ' epoch: ' + str(epoch)
             predicttoprint += ' len: ' + str(vlen(snet).cpu().numpy())
-            predicttoprint += ' loss: ' + str(loss.cpu().numpy())
-            predicttoprint += ' accuracy: ' + str(accuracy.cpu().numpy())
-            print(predicttoprint, file=open('D:/yukong/survid/logs/Cross/predict_log.txt', 'a'), flush=True)
-            print('# Finished ...', file=open('D:/yukong/survid/logs/Cross/predict_log.txt', 'a'), flush=True)
+            predicttoprint += ' val_loss: ' + str(val_loss.cpu().numpy())
+            predicttoprint += ' val_accuracy: ' + str(val_accuracy.cpu().numpy())
+            print(predicttoprint, file=open('D:/yukong/survid/logs/Cross/val_log.txt', 'a'), flush=True)
+            print('# Finished ...', file=open('D:/yukong/survid/logs/Cross/val_log.txt', 'a'), flush=True)
 
-
-
-        count += 1
-        print(count)
-        if count == args.niterations:
-            break
+        epoch += 1
+        print(epoch)
+        print(train_accuracy)
+        print(val_accuracy)
         torch.cuda.empty_cache()
+
+        if epoch == args.niterations:
+            break
+        
     
     print('# Finished at ' + time.strftime('%c') + ', %g seconds elapsed' %
           (time.time()-time0), file=open(logname, 'a'), flush=True)
@@ -225,4 +217,3 @@ if __name__ == '__main__':
     ensure_dir(args.data_dir + '/images')
 
     main()
-
