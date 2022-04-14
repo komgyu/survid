@@ -70,12 +70,65 @@ def main():
 
     train_loss = 0.69*torch.ones([], device=device) # loss for random decision = ln(0.5)
     train_accuracy = 0.5*torch.ones([], device=device) # random decision = 0.5
+    train_iou = 0.5*torch.ones([], device=device)
 
     val_loss = 0.69*torch.ones([], device=device) # loss for random decision = ln(0.5)
     val_accuracy = 0.5*torch.ones([], device=device) # random decision = 0.5
+    val_iou = 0.5*torch.ones([], device=device)
     
-    #training starts    
-    while epoch<= 5000:
+
+    #compute IoU
+    def computeIoU(scores, labels):
+        scores   = scores.squeeze(0)
+        labels   = labels.squeeze(0)
+        scores   = scores.cpu().detach().numpy()
+        labels   = labels.cpu().detach().numpy()
+
+        num00 = 0
+        num01 = 0
+        num02 = 0
+
+        num10 = 0
+        num11 = 0
+        num12 = 0
+
+        num20 = 0
+        num21 = 0
+        num22 = 0
+
+        for i in range(1024):
+            for j in range(1920):
+                if labels[i,j]==0 and scores[i,j] == 0:
+                    num00 += 1
+                if labels[i,j]==0 and scores[i,j] == 1:
+                    num01 += 1
+                if labels[i,j]==0 and scores[i,j] == 2:
+                    num02 += 1
+
+                if labels[i,j]==1 and scores[i,j] == 0:
+                    num10 += 1
+                if labels[i,j]==1 and scores[i,j] == 1:
+                    num11 += 1
+                if labels[i,j]==1 and scores[i,j] == 2:
+                    num12 += 1
+
+                if labels[i,j]==2 and scores[i,j] == 0:
+                    num20 += 1
+                if labels[i,j]==2 and scores[i,j] == 1:
+                    num21 += 1
+                if labels[i,j]==2 and scores[i,j] == 2:
+                    num22 += 1
+        iou0 = num00/(num00+num01+num02)
+        iou1 = num11/(num10+num11+num12)
+        iou2 = num22/(num20+num21+num22)
+        miou = (iou0 + iou1 + iou2)/3
+
+        return miou
+
+
+
+    #training starts 
+    while epoch<= 500:
         for i, data in enumerate(trainloader):
             im, s, s_gt,_,_= data #im，original image, s = im + flow
             im   = im.to(device)
@@ -96,12 +149,16 @@ def main():
             current_accuracy = (s == s_gt).float().mean()
             train_accuracy = train_accuracy*0.99 + current_accuracy*0.01
 
+            current_iou = computeIoU(s, s_gt)
+            train_iou = train_iou*0.99 + current_iou*0.01
+
         # once awhile print something out   
         if epoch%log_period==0:
             strtoprint = 'time: ' + str(time.time()-time0) + ' epoch: ' + str(epoch)
             strtoprint += ' len: ' + str(vlen(snet).cpu().numpy())
             strtoprint += ' train_loss: ' + str(train_loss.cpu().numpy())
             strtoprint += ' train_accuracy: ' + str(train_accuracy.cpu().numpy())
+            strtoprint += ' train_iou: ' + str(train_iou.cpu().numpy())
             print(strtoprint, file=open(logname, 'a'), flush=True)
 
 
@@ -110,83 +167,87 @@ def main():
 
             # visualize current result (for one image)
             
-            imtoviz = s
-            imtoviz = imtoviz.cpu().detach().numpy()
-            s_gt = s_gt.cpu().detach().numpy()
+            # imtoviz = s
+            # imtoviz = imtoviz.cpu().detach().numpy()
+            # s_gt = s_gt.cpu().detach().numpy()
 
-            g_viz = np.zeros([1024,1920,3],dtype = np.uint8)
-            g_viz[:,:,0] = (s_gt[0,:,:]== 2)*128 
-            g_viz[:,:,1] = (s_gt[0,:,:]== 1)*128                  
-            g_viz = Image.fromarray(g_viz)
+            # g_viz = np.zeros([1024,1920,3],dtype = np.uint8)
+            # g_viz[:,:,0] = (s_gt[0,:,:]== 2)*128 
+            # g_viz[:,:,1] = (s_gt[0,:,:]== 1)*128                  
+            # g_viz = Image.fromarray(g_viz)
             
              
-            im_viz = np.zeros([1024,1920,3])
-            im_viz[:,:,0] = (imtoviz[0,:,:]==2)*128
-            im_viz[:,:,1] = (imtoviz[0,:,:]==1)*128
+            # im_viz = np.zeros([1024,1920,3])
+            # im_viz[:,:,0] = (imtoviz[0,:,:]==2)*128
+            # im_viz[:,:,1] = (imtoviz[0,:,:]==1)*128
 
-            im_viz = Image.fromarray(np.uint8(im_viz))
+            # im_viz = Image.fromarray(np.uint8(im_viz))
 
-            g_viz = g_viz.save('./images/Cross/gt.png')
-            im_viz = im_viz.save('./images/Cross/img_' + str(epoch) + '.png')
-            #vutils.save_image(g_viz.float(), args.data_dir + '/images/Cross/gt.png')
-            #vutils.save_image(im_viz.float(), args.data_dir + '/images/Cross/img_' + str(count) + '.png')
+            # g_viz = g_viz.save('./images/Cross/gt.png')
+            # im_viz = im_viz.save('./images/Cross/img_' + str(epoch) + '.png')
+            # #vutils.save_image(g_viz.float(), args.data_dir + '/images/Cross/gt.png')
+            # #vutils.save_image(im_viz.float(), args.data_dir + '/images/Cross/img_' + str(count) + '.png')
             print('# Now at ' + time.strftime('%c'), file=open(logname, 'a'), flush=True)
             print('# ... done.', file=open(logname, 'a'), flush=True)
 
             ####################################################################
-            #validate after every epoch
-            IMAGE_PATH = './validate/2peg/original/'+ str(300+epoch%9)+'.png'
-            FLOW_PATH = './validate/2peg/flow/'+ str(300+epoch%9)+'.png'
-            LABEL_PATH = './validate/2peg/label/'+ str(300+epoch%9)+'.png'
-            PATH = 'D:/yukong/survid/models/snet_tmp.pt'
-            model = torch.nn.DataParallel(SNet(6)).to(device)
-            model.load_state_dict(torch.load(PATH))
+            with torch.no_grad():
+                IMAGE_PATH = './validate/2peg/original/'+ str(300+epoch%9)+'.png'
+                FLOW_PATH = './validate/2peg/flow/'+ str(300+epoch%9)+'.png'
+                LABEL_PATH = './validate/2peg/label/'+ str(300+epoch%9)+'.png'
+                # PATH = 'D:/yukong/survid/models/snet_tmp.pt'
+                # model = torch.nn.DataParallel(SNet(6)).to(device)
+                # model.load_state_dict(torch.load(PATH))
 
-            image = Image.open(IMAGE_PATH).convert('RGB')
-            image = np.asarray(np.array(image),np.float32) 
-            image = image.transpose((2,0,1))
-            image = torch.tensor(image)
-            image = image.to(device)
+                image = Image.open(IMAGE_PATH).convert('RGB')
+                image = np.asarray(np.array(image),np.float32) 
+                image = image.transpose((2,0,1))
+                image = torch.tensor(image)
+                image = image.to(device)
 
-            flow = Image.open(FLOW_PATH).convert('RGB')
-            flow = np.asarray(np.array(flow),np.float32) 
-            flow = flow.transpose((2,0,1))#transpose the  H*W*C to C*H*W
-            flow = torch.tensor(flow)
-            flow = flow.to(device)
+                flow = Image.open(FLOW_PATH).convert('RGB')
+                flow = np.asarray(np.array(flow),np.float32) 
+                flow = flow.transpose((2,0,1))#transpose the  H*W*C to C*H*W
+                flow = torch.tensor(flow)
+                flow = flow.to(device)
 
-            label= cv2.imread(LABEL_PATH)
-            label = cv2.cvtColor(label, cv2.COLOR_BGR2RGB)
-            new_label = np.empty([1024,1920],dtype = np.uint8)
-            for i in range(1024):
-              for j in range(1920):
-                if label[i, j, 0]!= 0: 
-                    new_label[i,j] = 2 #object red
-                if label[i, j, 1] !=0:
-                    new_label[i,j] = 1 # tool green
-                if label[i, j, 1]==0 and label[i, j, 0]== 0:
-                    new_label[i,j] = 0 #backgrond black
-            
-            L = torch.tensor(new_label,dtype=torch.long)
-            L = L.unsqueeze(0)
-            L = L.to(device)
-            
-            IF = torch.cat((image,flow), 0)
-            IF = IF.unsqueeze(0)
-            scores = model(IF)
+                label= cv2.imread(LABEL_PATH)
+                label = cv2.cvtColor(label, cv2.COLOR_BGR2RGB)
+                new_label = np.empty([1024,1920],dtype = np.uint8)
+                for i in range(1024):
+                  for j in range(1920):
+                    if label[i, j, 0]!= 0: 
+                        new_label[i,j] = 2 #object red
+                    if label[i, j, 1] !=0:
+                        new_label[i,j] = 1 # tool green
+                    if label[i, j, 1]==0 and label[i, j, 0]== 0:
+                        new_label[i,j] = 0 #backgrond black
+                
+                L = torch.tensor(new_label,dtype=torch.long)
+                L = L.unsqueeze(0)
+                L = L.to(device)
+                
+                IF = torch.cat((image,flow), 0)
+                IF = IF.unsqueeze(0)
+                scores = snet(IF)
 
-            current_loss = criterion(scores, L)
-            val_loss = val_loss*0.99 + current_loss.detach()*0.01
-            
-            scores = torch.argmax(scores, dim = 1)
-            current_accuracy = (scores == L).float().mean()
-            val_accuracy = val_accuracy*0.99 + current_accuracy*0.01
+                current_loss = criterion(scores, L)
+                val_loss = val_loss*0.9 + current_loss.detach()*0.1
+                
+                scores = torch.argmax(scores, dim = 1)
+                current_accuracy = (scores == L).float().mean()
+                val_accuracy = val_accuracy*0.9 + current_accuracy*0.1
 
-            valtoprint = 'time: ' + str(time.time()-time0) + ' epoch: ' + str(epoch)
-            valtoprint += ' len: ' + str(vlen(snet).cpu().numpy())
-            valtoprint += ' val_loss: ' + str(val_loss.cpu().numpy())
-            valtoprint += ' val_accuracy: ' + str(val_accuracy.cpu().numpy())
-            print(valtoprint, file=open('D:/yukong/survid/logs/Cross/val_log.txt', 'a'), flush=True)
-            print('# Finished ...', file=open('D:/yukong/survid/logs/Cross/val_log.txt', 'a'), flush=True)
+                current_iou = computeIoU(scores, L)
+                val_iou = val_iou*0.9 + current_iou*0.1
+
+                predicttoprint = 'time: ' + str(time.time()-time0) + ' epoch: ' + str(epoch)
+                predicttoprint += ' len: ' + str(vlen(snet).cpu().numpy())
+                predicttoprint += ' val_loss: ' + str(val_loss.cpu().numpy())
+                predicttoprint += ' val_accuracy: ' + str(val_accuracy.cpu().numpy())
+                predicttoprint += ' val_iou: ' + str(val_iou.cpu().numpy())
+                print(predicttoprint, file=open('D:/yukong/survid/logs/Cross/val_log.txt', 'a'), flush=True)
+                print('# Finished ...', file=open('D:/yukong/survid/logs/Cross/val_log.txt', 'a'), flush=True)
 
         epoch += 1
         print(epoch)
