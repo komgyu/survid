@@ -12,11 +12,13 @@
 
 
 3 channels input training result
-![2022-04-13 (1)](https://user-images.githubusercontent.com/38833796/163136190-fa4d8be0-65a5-45a5-a5df-e5a3e867a0ab.png)
+![2022-04-22 (3)](https://user-images.githubusercontent.com/38833796/164741510-96b74857-3bda-48ef-a561-6dfbbe4e92b9.png)
+
 
 
 3 channel input validation result
-![2022-04-13 (2)](https://user-images.githubusercontent.com/38833796/163135878-314628af-456b-43e3-994c-7168ffeacce6.png)
+![2022-04-22 (2)](https://user-images.githubusercontent.com/38833796/164741307-901dbb95-1e66-4132-8bcf-02d229313250.png)
+
 
 
 
