@@ -18,9 +18,9 @@ class UAVDataSet(torch.utils.data.Dataset):
         self.img_ids = [i_id.strip() for i_id in open(list_path)]
         self.files = []
         for name in self.img_ids:
-            img_file = os.path.join(self.root, "original_data/original/%s.png" % name)
-            label_file = os.path.join(self.root, "original_data/label/%s.png" % name)
-            flow_file = os.path.join(self.root, "original_data/flow/%s.png" % name)
+            img_file = os.path.join(self.root, "original_data/original/scale/%s.png" % name)
+            label_file = os.path.join(self.root, "original_data/label/scale/%s.png" % name)
+            flow_file = os.path.join(self.root, "original_data/flow/scale/%s.png" % name)
             self.files.append({
                 "img": img_file,
                 "label": label_file,
