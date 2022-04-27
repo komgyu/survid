@@ -22,9 +22,11 @@
 3 channel input validation result learning rate= 1e-4
 ![2022-04-27 (6)](https://user-images.githubusercontent.com/38833796/165528708-b08a9386-ee77-4ae5-a944-63bd8d6834a3.png)
 
+3 channels input training result learning rate= 1e-5
+![2022-04-27 (7)](https://user-images.githubusercontent.com/38833796/165547312-52bd8316-0b52-41ac-a225-f66a159c5be7.png)
 
 
+3 channel input validation result learning rate= 1e-5
 
-
-
+![image](https://user-images.githubusercontent.com/38833796/165547476-c7a547d9-c6d2-4b0c-a8a9-ed68c468c7e4.png)
 
