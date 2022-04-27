@@ -16,13 +16,13 @@
 
 
 
-3 channels input training result
-![2022-04-22 (3)](https://user-images.githubusercontent.com/38833796/164741510-96b74857-3bda-48ef-a561-6dfbbe4e92b9.png)
+3 channels input training result learning rate= 1e-4
+![2022-04-27](https://user-images.githubusercontent.com/38833796/165528498-e00a25b9-6e35-4794-8e1e-7e85d86359e0.png)
+
+3 channel input validation result learning rate= 1e-4
+![2022-04-27 (6)](https://user-images.githubusercontent.com/38833796/165528708-b08a9386-ee77-4ae5-a944-63bd8d6834a3.png)
 
 
-
-3 channel input validation result
-![2022-04-22 (2)](https://user-images.githubusercontent.com/38833796/164741307-901dbb95-1e66-4132-8bcf-02d229313250.png)
 
 
 
