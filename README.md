@@ -44,4 +44,7 @@ prediction accuracy for scaled image:0.9789
 
 ![301predict](https://user-images.githubusercontent.com/38833796/165939251-44ed9d46-dfcb-4cf6-aa01-7777509fa25d.png)
 
+original image for reference
+![301](https://user-images.githubusercontent.com/38833796/165943263-2ff856d4-219d-418b-9c5b-115a2e16fc36.png)
+
 
