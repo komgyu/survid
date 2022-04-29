@@ -25,7 +25,7 @@ training 30 images
 3 channel input validation result learning rate= 1e-5
 ![2022-04-27 (8)](https://user-images.githubusercontent.com/38833796/165547600-9cd51d23-f297-44f1-97e0-5ddb3bcefa6a.png)
 
-training 40 images:
+training 40 images
 
 6 channels input training result learning rate= 1e-5
 ![2022-04-29](https://user-images.githubusercontent.com/38833796/165939442-2eb69e47-a5c5-40ed-be29-f48a5756c8fa.png)
@@ -35,10 +35,12 @@ training 40 images:
 ![2022-04-29 (1)](https://user-images.githubusercontent.com/38833796/165939376-83521702-7162-4952-a786-ae24cd148b31.png)
 
 prediction accuracy for original image:0.9503
+
 ![301predict](https://user-images.githubusercontent.com/38833796/165938462-92d4e5fa-8b30-4421-a342-3e97c946beec.png)
 
 
 prediction accuracy for scaled image:0.9789
+
 ![301predict](https://user-images.githubusercontent.com/38833796/165939251-44ed9d46-dfcb-4cf6-aa01-7777509fa25d.png)
 
 
