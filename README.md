@@ -1,5 +1,6 @@
 # survid
 training 30 images：
+
 6 channels input training result learning rate= 1e-4
 ![2022-04-27 (4)](https://user-images.githubusercontent.com/38833796/165527339-89791a0d-3e45-42c7-80fb-7dec4e62f7b8.png)
 
