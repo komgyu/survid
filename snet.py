@@ -5,7 +5,7 @@ class SNet(torch.nn.Module):
         super(SNet, self).__init__()
 
         nn = 64
-        wnd = 5
+        wnd = 3
         self.conv0 = torch.nn.Conv2d(nch, 64, wnd, padding='same')
         self.conv1 = torch.nn.Conv2d(64,  64, wnd, padding='same') 
         self.conv2 = torch.nn.Conv2d(64,  64, wnd, padding='same')
@@ -24,11 +24,11 @@ class SNet(torch.nn.Module):
 
         hh = torch.relu(self.conv0(x))
         hh = torch.relu(self.conv1(hh))
-        hh = torch.relu(self.conv2(hh))
-        hh = self.bn1(hh)
+        hh = self.conv2(hh)
+        hh = torch.relu(self.bn1(hh))
         hh = torch.relu(self.conv3(hh))
-        hh = torch.relu(self.conv4(hh))
-        hh = self.bn2(hh)
+        hh = self.conv4(hh)
+        hh = torch.relu(self.bn2(hh))
         hh = torch.relu(self.conv5(hh))
         # hh = torch.relu(self.conv6(hh))
        
