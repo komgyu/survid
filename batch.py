@@ -138,6 +138,7 @@ class AugDataSet(torch.utils.data.Dataset):
 		I = I.transpose((2,0,1))#transpose the  H*W*C to C*H*W
 		I = torch.tensor(I)
 		F = np.asarray(np.array(flow),np.float32) 
+		F = add_Gaussian(F)
 		F = F.transpose((2,0,1))#transpose the  H*W*C to C*H*W
 		F = torch.tensor(F)
 		IF = torch.cat((I,F), 0)
@@ -197,6 +198,7 @@ class ValDataSet(torch.utils.data.Dataset):
 		I = I.transpose((2,0,1))#transpose the  H*W*C to C*H*W
 		I = torch.tensor(I)
 		F = np.asarray(np.array(flow),np.float32) 
+		F = add_Gaussian(F)
 		F = F.transpose((2,0,1))#transpose the  H*W*C to C*H*W
 		F = torch.tensor(F)
 		IF = torch.cat((I,F), 0)
