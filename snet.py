@@ -5,22 +5,23 @@ class SNet(torch.nn.Module):
         super(SNet, self).__init__()
 
         nn = 64
-        wnd = 3
-        self.conv0 = torch.nn.Conv2d(nch, 64, wnd, padding='same')
-        self.conv1 = torch.nn.Conv2d(,  64, wnd, padding='same') 
-        self.conv2 = torch.nn.Conv2d(64,  64, wnd, padding='same')
-        self.bn1   = torch.nn.BatchNorm2d(64)
-        self.conv3 = torch.nn.Conv2d(64,  64,  wnd, padding='same')
+        wnd = 7
+        self.conv0 = torch.nn.Conv2d(nch, 128, wnd, padding='same')
+        self.conv1 = torch.nn.Conv2d(128,  128, wnd, padding='same') 
+        self.conv2 = torch.nn.Conv2d(128,  128, wnd, padding='same')
+        self.bn1   = torch.nn.BatchNorm2d(128)
+        self.conv3 = torch.nn.Conv2d(128,  128,  wnd, padding='same')
         self.pool1  = torch.nn.MaxPool2d(2)
-        self.conv4 = torch.nn.Conv2d(64,  64,  wnd, padding='same')
-        self.bn2   = torch.nn.BatchNorm2d(64)
-        self.conv5 = torch.nn.Conv2d(64,  64,  wnd, padding='same')
+        self.conv4 = torch.nn.Conv2d(128,  128,  wnd, padding='same')
+        self.bn2   = torch.nn.BatchNorm2d(128)
+        self.conv5 = torch.nn.Conv2d(128,  128,  wnd, padding='same')
         self.pool2 = torch.nn.MaxPool2d(2)
-        self.conv6 = torch.nn.Conv2d(64,  64,  wnd, padding='same')
-        self.up1   = torch.nn.ConvTranspose2d(64,64,2, stride = 2)
-        self.conv7 = torch.nn.Conv2d(128,  128,  wnd, padding='same')
-        self.up2   = torch.nn.ConvTranspose2d(128,64,2, stride = 2)
-        self.conv8 = torch.nn.Conv2d(128,  3,  wnd, padding='same')
+        self.conv6 = torch.nn.Conv2d(128,  128,  wnd, padding='same')
+        self.up1   = torch.nn.ConvTranspose2d(128,128,2, stride = 2)
+        self.conv7 = torch.nn.Conv2d(256,  256,  wnd, padding='same')
+        self.up2   = torch.nn.ConvTranspose2d(256,128,2, stride = 2)
+        self.conv8 = torch.nn.Conv2d(256,  3,  wnd, padding='same')
+        
         # self.conv7 = torch.nn.Conv2d(64,  3,  wnd, padding='same')
       
 
@@ -41,5 +42,6 @@ class SNet(torch.nn.Module):
         hh = torch.relu(self.conv7(hh))
         hh = self.up2(hh)
         hh = torch.cat([hh,hh0],dim = 1)
+        # hh = torch.relu(self.conv8(hh))
 
         return self.conv8(hh)
