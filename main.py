@@ -24,7 +24,7 @@ def vlen(layer): #vlen(snet)
     vnn = 0
     for vv in layer.parameters():
         if vv.requires_grad: # requires_grad = False default is False
-            param = vv.data
+            param = vv.data  #param will a tensor share the same data with vv, or param = vv.detach()
             vsum = vsum + (param*param).sum()
             vnn = vnn + param.numel()  #返回param中元素的数量
     return vsum/vnn
