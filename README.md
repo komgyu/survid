@@ -26,6 +26,7 @@ learning rate = 1e-5 & learning rate = 1e-4
 ![compare_rate](https://user-images.githubusercontent.com/38833796/168589468-0f809f3c-aaff-43ff-89fe-87d92fc99e44.png)
 
 learning rate = 1e-3
-![3pooltrain](https://user-images.githubusercontent.com/38833796/168797251-6a786a85-8b75-43d5-8e0f-a7f46f486400.png)
+![3pooltrain](https://user-images.githubusercontent.com/38833796/168797436-27988a05-1edd-4038-a035-72cb0f7dc7d2.png)
+
 
 ![3poolval](https://user-images.githubusercontent.com/38833796/168797081-f45b1dd5-7388-465d-b25a-0d1ac96c44f2.png)
