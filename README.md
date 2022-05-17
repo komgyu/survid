@@ -27,8 +27,6 @@ For learning rate = 1e-3
 Train accuracy = 0.997998, Train mIoU = 0.9461413
 Val accuracy = 0.9854351, Val mIoU = 0.90332425
 
-![compare_rate_train](https://user-images.githubusercontent.com/38833796/168801176-17ff29e6-bebe-4216-9dd9-5dbb35113c9e.png)
-
-![compare_rate](https://user-images.githubusercontent.com/38833796/168800974-07cfd70c-d30a-4805-805e-8518a48dd157.png)
-
+![compare_rate_train](https://user-images.githubusercontent.com/38833796/168803552-b1cc3d0e-babc-4187-86a1-01da392481f6.png)
+![compare_rate_val](https://user-images.githubusercontent.com/38833796/168803591-95aa04ad-0918-4f7e-bb7b-b525b4da1dc9.png)
 
