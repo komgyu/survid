@@ -22,11 +22,13 @@
 
 
 4 pooling layers
-learning rate = 1e-5 & learning rate = 1e-4
-![compare_rate](https://user-images.githubusercontent.com/38833796/168589468-0f809f3c-aaff-43ff-89fe-87d92fc99e44.png)
+learning rate = 1e-5, learning rate = 1e-4 & learning rate = 1e-3
+For learning rate = 1e-3
+Train accuracy = 0.997998, Train mIoU = 0.9461413
+Val accuracy = 0.9854351, Val mIoU = 0.90332425
 
-learning rate = 1e-3
-![3pooltrain](https://user-images.githubusercontent.com/38833796/168797436-27988a05-1edd-4038-a035-72cb0f7dc7d2.png)
+![compare_rate_train](https://user-images.githubusercontent.com/38833796/168801176-17ff29e6-bebe-4216-9dd9-5dbb35113c9e.png)
+
+![compare_rate](https://user-images.githubusercontent.com/38833796/168800974-07cfd70c-d30a-4805-805e-8518a48dd157.png)
 
 
-![3poolval](https://user-images.githubusercontent.com/38833796/168797081-f45b1dd5-7388-465d-b25a-0d1ac96c44f2.png)
