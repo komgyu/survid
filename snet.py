@@ -34,7 +34,10 @@ class SNet(torch.nn.Module):
         self.up3   = torch.nn.ConvTranspose2d(128, 64, 2, stride=2)
         self.conv8 = DoubleConv(128, 64, 3)
         self.up4   = torch.nn.ConvTranspose2d(64, 32, 2, stride=2)
-        self.conv9 = DoubleConv(32, 3, 3)
+        self.conv9 = DoubleConv(64, 32, 3)
+        self.conv10 = torch.nn.Conv2d(32, 3, 3, padding = 1)
+        self.batch = torch.nn.BatchNorm2d(3)
+       
 
 
     def forward(self, x):
@@ -58,6 +61,9 @@ class SNet(torch.nn.Module):
         hh8   = self.conv8(cat3)
         up4   = self.up4(hh8)  
         cat4  = torch.cat([up4, hh1], dim = 1) #16 + 16
-        hh9   = self.conv9(up4)
+        hh9   = self.conv9(cat4)
+        hh    = self.conv10(hh9)
+        hh    = torch.nn.ReLU(self.batch(hh))
 
-        return(hh9)
+        return(hh)
+
