@@ -9,19 +9,20 @@ import torchvision
 from torchvision import transforms
 #import cv2
 from PIL import Image
+import torchvision.transforms.functional as TF
 #import torchvision.transforms as transforms
 
-def add_Gaussian(flow):
-    flow = flow/255
-    row,col,ch= np.shape(flow)
-    mean = 0
-    sigma = 0.5
-    gauss = np.random.normal(mean,sigma,(row,col,ch))
-    gauss = gauss.reshape(row,col,ch)
-    noisy = flow + gauss
-    noisy = np.clip(noisy, 0, 1)
-    noisy = np.uint8(noisy*255)
-    return noisy
+#def add_Gaussian(flow):
+#     flow = flow/255
+#     row,col,ch= np.shape(flow)
+#     mean = 0
+#     sigma = 0.5
+#     gauss = np.random.normal(mean,sigma,(row,col,ch))
+#     gauss = gauss.reshape(row,col,ch)
+#     noisy = flow + gauss
+#     noisy = np.clip(noisy, 0, 1)
+#     noisy = np.uint8(noisy*255)
+#     return noisy
 
 class TrainDataSet(torch.utils.data.Dataset):
     def __init__(self, root, list_path, ignore_label=255,device ='cuda'):
@@ -72,7 +73,7 @@ class TrainDataSet(torch.utils.data.Dataset):
         I = I.transpose((2,0,1))#transpose the  H*W*C to C*H*W
         I = torch.tensor(I)
         F = np.asarray(np.array(flow),np.float32) 
-        F = add_Gaussian(F)
+        #F = add_Gaussian(F)
         F = F.transpose((2,0,1))#transpose the  H*W*C to C*H*W
         F = torch.tensor(F)
         IF = torch.cat((I,F), 0)
@@ -109,17 +110,21 @@ class AugDataSet(torch.utils.data.Dataset):
  
         '''load the datas'''
         #transforms.RandomCrop(300,pad_if_needed=True,fill=0, padding_mode='constant')
-        flip = transforms.Compose([transforms.RandomHorizontalFlip(p=1),
-                                  transforms.CenterCrop(512)])
+        flip = transforms.RandomHorizontalFlip(p=1)
         name  = datafiles["name"]
         image = Image.open(datafiles["img"]).convert('RGB')
         image = flip(image)
+        i, j, h, w = transforms.RandomCrop.get_params(image, output_size=(512, 512))
+        image = TF.crop(image, i, j, h, w)
         flow  = Image.open(datafiles["flow"]).convert('RGB')
         flow  = flip(flow)
+        flow  = TF.crop(flow,  i, j, h, w)
         label = cv2.imread(datafiles["label"])# h,w,c [1024, 1920, 3]
         label = cv2.cvtColor(label, cv2.COLOR_BGR2RGB)
         label = Image.fromarray(label)
         label  = flip(label)
+        label = TF.crop(label, i, j, h, w)
+
         label = np.asarray(label)
         m = np.shape(label)[0]
         n = np.shape(label)[1]
@@ -139,7 +144,7 @@ class AugDataSet(torch.utils.data.Dataset):
         I = I.transpose((2,0,1))#transpose the  H*W*C to C*H*W
         I = torch.tensor(I)
         F = np.asarray(np.array(flow),np.float32) 
-        F = add_Gaussian(F)
+        #F = add_Gaussian(F)
         F = F.transpose((2,0,1))#transpose the  H*W*C to C*H*W
         F = torch.tensor(F)
         IF = torch.cat((I,F), 0)
@@ -199,7 +204,7 @@ class ValDataSet(torch.utils.data.Dataset):
         I = I.transpose((2,0,1))#transpose the  H*W*C to C*H*W
         I = torch.tensor(I)
         F = np.asarray(np.array(flow),np.float32) 
-        F = add_Gaussian(F)
+        #F = add_Gaussian(F)
         F = F.transpose((2,0,1))#transpose the  H*W*C to C*H*W
         F = torch.tensor(F)
         IF = torch.cat((I,F), 0)
