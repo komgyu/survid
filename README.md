@@ -1,32 +1,30 @@
 # survid
-70 training images + data augmentation
-2 pooling layers
+Enviroment:
+Anaconda 3
+Python = 3.8
+conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
+NumPy, etc....
 
-|  Train | 6 without Gaussian  | 6 with Gaussian | 3 channel|
-|--------|---------------------|-----------------|----------|
-| loss   |     0.010412797     |   0.013968818   |0.010660506|
-|accuracy|     0.9957977       |    0.99447954   | 0.9956917|
-|  mIoU  |     0.9299962       |   0.9175082     | 0.9296004|
+The training data, validation data and test data are located in directory:./original_data, ./validate, ./test.
+The images are scaled so there are ./scale files. The whole process will use the scaled images to fit the GPU size.
 
-|validate| 6 without Gaussian  | 6 with Gaussian | 3 channel|
-|--------|---------------------|-----------------|----------|
-| loss   |     0.094205014     |  0.053493056    |0.059291173|
-|accuracy|     0.97569734      |   0.98308015    |0.98359656|
-|  mIoU  |    0.8325688        |   0.893182      |0.89593565|
+./others stored files for drawing plots and etc.
+./model_records stored the history models.
+./models stored the final models used for test.
+./logs/Cross_records stored the history training data.
+-------------------------------------------------------------------------------------------------------------------
+For training, run main.py.
+There are 2 kinds of input, 3-channel or 6-channel.
+The default is 6 channel, if you want to switch to 3-channel:
+modify line 46 in main.py: 6->3
+modify line 172 in main.py: s->im
+modify line 200 in main.py: s->im
+modify line 229 in main.py: s->im
 
-![gaussian_train](https://user-images.githubusercontent.com/38833796/168426678-4bafb8c4-9edc-4b8f-a79f-a1d894957b93.png)
-![gaussian_val](https://user-images.githubusercontent.com/38833796/168426677-a5d60093-f03b-44d1-b7da-aa367fd02555.png)
-
-![3compare6_train](https://user-images.githubusercontent.com/38833796/168473038-cfac9929-61a3-48d2-9ed2-60bec7fc1e4b.png)
-![3compare6_val](https://user-images.githubusercontent.com/38833796/168473030-dfd7cf81-8e19-459f-afca-af7be4cd73cd.png)
-
-
-4 pooling layers
-learning rate = 1e-5, learning rate = 1e-4 & learning rate = 1e-3
-For learning rate = 1e-3
-Train accuracy = 0.997998, Train mIoU = 0.9461413
-Val accuracy = 0.9854351, Val mIoU = 0.90332425
-
-![compare_rate_train](https://user-images.githubusercontent.com/38833796/168803552-b1cc3d0e-babc-4187-86a1-01da392481f6.png)
-![compare_rate_val](https://user-images.githubusercontent.com/38833796/168803591-95aa04ad-0918-4f7e-bb7b-b525b4da1dc9.png)
-
+------------------------------------------------------------------------------------------------------------------
+For test, run predict.py
+The final models for 3 channel and 6 channel are located in ./models.
+The default is also 6-channel input, if you want to switch to 3-channel:
+modify line 100 in predict.py: snet_tmp6final.pt->snet_tmp3final.pt
+modify line 100 in predict.py: 6->3
+modify line 146 in predict.py: IF->image
