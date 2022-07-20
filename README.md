@@ -31,4 +31,6 @@ modify line 100 in predict.py: snet_tmp6final.pt->snet_tmp3final.pt
 modify line 100 in predict.py: 6->3  
 modify line 146 in predict.py: IF->image  
 
+Results
+![2022-07-20 (3)](https://user-images.githubusercontent.com/38833796/179974895-7a540892-6e64-4e54-b9eb-92a0131f93d7.png)
 
